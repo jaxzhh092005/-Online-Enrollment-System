@@ -1,7 +1,6 @@
 from urllib.parse import urlencode
 
 from django.contrib import messages
-from django.contrib.admin.views.decorators import staff_member_required
 from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render
@@ -11,7 +10,7 @@ from .models import Student
 
 TABS = [
     ("personal", "Personal info"),
-    ("enrollment", "Enrollment & billing"),
+    ("enrollment", "Enrollment"),
 ]
 
 
@@ -19,7 +18,6 @@ def _detail(pk):
     return Student.objects.filter(pk=pk).first()
 
 
-@staff_member_required
 def student_list(request):
     status = request.GET.get("status", "")
     section = request.GET.get("section", "")
@@ -70,7 +68,6 @@ def _next_student_id():
     return f"2026-{n:04d}"
 
 
-@staff_member_required
 def student_edit(request, pk=None):
     instance = get_object_or_404(Student, pk=pk) if pk else None
 
@@ -89,7 +86,6 @@ def student_edit(request, pk=None):
     })
 
 
-@staff_member_required
 def student_delete(request, pk):
     student = get_object_or_404(Student, pk=pk)
     if request.method == "POST":

@@ -1,8 +1,8 @@
 # Enrollment System – Student Profile View (Django)
 
-An admin page that lists every student in a class and shows each student's profile
+A student system that lists every student in a class and shows each student's profile
 (personal info and enrollment) when selected.
-Admins can add, edit and remove students. A summary row above the list shows
+Users can add, edit and remove students without signing in. A summary row above the list shows
 students in view, officially enrolled and pending review.
 
 ## Run it
@@ -15,12 +15,12 @@ pip install -r requirements.txt
 python manage.py makemigrations students
 python manage.py migrate
 python manage.py seed_students   # optional sample data
-python manage.py createsuperuser # staff account used to sign in
 python manage.py runserver
 ```
 
-Open http://127.0.0.1:8000/ and sign in with the superuser account.
-Only staff users can open the pages.
+Open http://127.0.0.1:8000/ to use the system directly. No admin account is required.
+The student system is publicly accessible; anyone who can reach it can add, edit, or remove records.
+Create a superuser only if you need to use Django's separate `/admin/` interface.
 
 ## Layout
 

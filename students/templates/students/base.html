@@ -10,7 +10,6 @@
 <body>
 <header class="top">
   <a class="brand" href="{% url 'student_list' %}">JAX </a>
-  <nav><a href="{% url 'admin:index' %}">Site admin</a></nav>
 </header>
 {% if messages %}<ul class="toasts" role="status">{% for m in messages %}<li>{{ m }}</li>{% endfor %}</ul>{% endif %}
 <main class="page">{% block content %}{% endblock %}</main>
