@@ -1,0 +1,5 @@
+<div class="field{% if f.errors %} has-error{% endif %}">
+  <label for="{{ f.id_for_label }}">{{ f.label }}</label>
+  {{ f }}
+  {% for e in f.errors %}<small class="err">{{ e }}</small>{% endfor %}
+</div>

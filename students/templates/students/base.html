@@ -1,0 +1,18 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Student profiles{% endblock %} · BSIT SYSTEM</title>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'students/style.css' %}">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="{% url 'student_list' %}">JAX </a>
+  <nav><a href="{% url 'admin:index' %}">Site admin</a></nav>
+</header>
+{% if messages %}<ul class="toasts" role="status">{% for m in messages %}<li>{{ m }}</li>{% endfor %}</ul>{% endif %}
+<main class="page">{% block content %}{% endblock %}</main>
+</body>
+</html>

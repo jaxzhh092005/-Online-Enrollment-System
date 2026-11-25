@@ -1,0 +1,98 @@
+{% extends "students/base.html" %}
+{% block content %}
+<div class="head">
+  <div>
+    <h1>Student profiles</h1>
+    <p class="muted">Open a student to see their full record.</p>
+  </div>
+  <a class="btn primary" href="{% url 'student_add' %}">Add student</a>
+</div>
+
+<section class="stats" aria-label="Class summary">
+  <article class="stat"><h2>Students in view</h2><b>{{ stats.in_view }}</b><p>{% if section %}{{ section }}{% else %}All class sections{% endif %}</p></article>
+  <article class="stat"><h2>Officially enrolled</h2><b>{{ stats.enrolled }}</b><p>Cleared and active</p></article>
+  <article class="stat"><h2>Pending review</h2><b>{{ stats.pending }}</b><p>Awaiting registrar check</p></article>
+</section>
+
+<div class="workspace{% if viewing %} viewing{% endif %}">
+  <aside class="list" aria-label="Student list">
+    <form class="filters" method="get">
+      <input class="search" type="search" name="q" value="{{ q }}" placeholder="Search by name or student ID" aria-label="Search students">
+      {% if status %}<input type="hidden" name="status" value="{{ status }}">{% endif %}
+      <select name="section" aria-label="Class section" onchange="this.form.submit()">
+        <option value="">All class sections</option>
+        {% for s in sections %}<option value="{{ s }}"{% if s == section %} selected{% endif %}>{{ s }}</option>{% endfor %}
+      </select>
+      <noscript><button class="btn">Apply</button></noscript>
+    </form>
+    <div class="chips">
+      {% for label, qs, active in chips %}<a class="chip" href="?{{ qs }}"{% if active %} aria-current="true"{% endif %}>{{ label }}</a>{% endfor %}
+    </div>
+    <ul class="rows">
+      {% for s in students %}
+      <li><a class="row" href="?{{ keep }}&student={{ s.pk }}"{% if selected and s.pk == selected.pk %} aria-current="true"{% endif %}>
+        <span class="av" aria-hidden="true">{{ s.initials }}</span>
+        <span><span class="nm">{{ s.last_name }}, {{ s.first_name }}</span><span class="sub">{{ s.student_id }} · {{ s.status }}</span></span>
+      </a></li>
+      {% empty %}
+      <li class="empty">{% if total %}No students match. Clear the search or choose another status.{% else %}No students yet. Add the first student to this class.{% endif %}</li>
+      {% endfor %}
+    </ul>
+  </aside>
+
+  <section class="detail">
+  {% if selected %}
+    {% with s=selected %}
+    <a class="back" href="?{{ keep }}">Back to list</a>
+    <div class="hero">
+      <span class="av" aria-hidden="true">{{ s.initials }}</span>
+      <div>
+        <h2>{{ s.full_name }}</h2>
+        <p class="meta">{{ s.student_id }} · {{ s.section }}</p>
+        <span class="badge {{ s.status|lower }}">{{ s.status }}</span>
+      </div>
+      <div class="actions">
+        <a class="btn" href="{% url 'student_edit' s.pk %}">Edit</a>
+        <a class="btn danger" href="{% url 'student_delete' s.pk %}">Remove</a>
+      </div>
+    </div>
+
+    <nav class="tabs" aria-label="Profile sections">
+      {% for key, label in tabs %}<a class="tab" href="?{{ keep }}&student={{ s.pk }}&tab={{ key }}"{% if key == tab %} aria-current="page"{% endif %}>{{ label }}</a>{% endfor %}
+    </nav>
+
+    {% if tab == "personal" %}
+      <h3>Basic details</h3>
+      <dl class="grid">
+        <div><dt>Full name</dt><dd>{{ s.full_name }}</dd></div>
+        <div><dt>Student ID</dt><dd>{{ s.student_id }}</dd></div>
+        <div><dt>Sex</dt><dd>{{ s.sex }}</dd></div>
+        <div><dt>Date of birth</dt><dd>{{ s.date_of_birth|date:"F j, Y" }}</dd></div>
+        <div><dt>Place of birth</dt><dd>{{ s.place_of_birth|default:"—" }}</dd></div>
+        <div><dt>Nationality</dt><dd>{{ s.nationality|default:"—" }}</dd></div>
+        <div><dt>Religion</dt><dd>{{ s.religion|default:"—" }}</dd></div>
+        <div><dt>Languages spoken</dt><dd>{{ s.languages|default:"—" }}</dd></div>
+      </dl>
+      <h3>Contact</h3>
+      <dl class="grid">
+        <div><dt>Email</dt><dd>{{ s.email|default:"—" }}</dd></div>
+        <div><dt>Mobile</dt><dd>{{ s.phone|default:"—" }}</dd></div>
+        <div><dt>Home address</dt><dd>{{ s.address|default:"—" }}</dd></div>
+      </dl>
+
+    {% else %}
+      <h3>Enrollment</h3>
+      <dl class="grid">
+        <div><dt>Status</dt><dd>{{ s.status }}</dd></div>
+        <div><dt>Enrollment type</dt><dd>{{ s.enrollment_type }}</dd></div>
+        <div><dt>Grade and section</dt><dd>{{ s.section }}</dd></div>
+        <div><dt>School year</dt><dd>{{ s.school_year }}</dd></div>
+      </dl>
+    {% endif %}
+    {% endwith %}
+  {% else %}
+    <p class="empty">Select a student from the list to view their profile.</p>
+  {% endif %}
+  </section>
+</div>
+{% endblock %}

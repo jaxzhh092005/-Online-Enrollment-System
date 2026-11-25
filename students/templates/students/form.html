@@ -1,0 +1,27 @@
+{% extends "students/base.html" %}
+{% block title %}{% if student %}Edit {{ student.full_name }}{% else %}Add student{% endif %}{% endblock %}
+{% block content %}
+<div class="head">
+  <div>
+    <h1>{% if student %}Edit {{ student.full_name }}{% else %}Add student{% endif %}</h1>
+    <p class="muted">Fields marked with an asterisk are required.</p>
+  </div>
+</div>
+
+<form method="post" class="form">
+  {% csrf_token %}
+  {% if form.non_field_errors %}<p class="err">{{ form.non_field_errors }}</p>{% endif %}
+
+  {% for title, fields in form.grouped %}
+  <fieldset>
+    <legend>{{ title }}</legend>
+    <div class="fields">{% for f in fields %}{% include "students/_field.html" %}{% endfor %}</div>
+  </fieldset>
+  {% endfor %}
+
+  <div class="actions">
+    <button class="btn primary" type="submit">{% if student %}Save changes{% else %}Add student{% endif %}</button>
+    <a class="btn" href="{% url 'student_list' %}{% if student %}?student={{ student.pk }}{% endif %}">Cancel</a>
+  </div>
+</form>
+{% endblock %}
